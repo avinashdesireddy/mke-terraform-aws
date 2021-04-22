@@ -63,80 +63,18 @@ EOF
   }
 }
 
-resource "aws_lb" "mke_master" {
-  name               = "${var.cluster_name}-master-lb"
-  internal           = false
-  load_balancer_type = "network"
-  subnets            = var.subnet_ids
+# data "aws_route53_zone" "selected" {
+#   name         = "cluster.avinashdesireddy.com."
+# }
 
-  tags = {
-    Cluster = var.cluster_name
-  }
-}
+# resource "aws_route53_record" "www" {
+#   zone_id = data.aws_route53_zone.selected.zone_id
+#   name    = "${var.cluster_name}-mke.${data.aws_route53_zone.selected.name}"
+#   type    = "A"
 
-resource "aws_lb_target_group" "mke_master_api" {
-  name     = "${var.cluster_name}-api"
-  port     = 443
-  protocol = "TCP"
-  vpc_id   = var.vpc_id
-}
-
-resource "aws_lb_listener" "mke_master_api" {
-  load_balancer_arn = aws_lb.mke_master.arn
-  port              = 443
-  protocol          = "TCP"
-
-  default_action {
-    target_group_arn = aws_lb_target_group.mke_master_api.arn
-    type             = "forward"
-  }
-}
-
-resource "aws_lb_target_group_attachment" "mke_master_api" {
-  count            = var.master_count
-  target_group_arn = aws_lb_target_group.mke_master_api.arn
-  target_id        = aws_instance.mke_master[count.index].id
-  port             = 443
-}
-
-resource "aws_lb_target_group" "mke_kube_api" {
-  name     = "${var.cluster_name}-kube-api"
-  port     = 6443
-  protocol = "TCP"
-  vpc_id   = var.vpc_id
-}
-
-resource "aws_lb_listener" "mke_kube_api" {
-  load_balancer_arn = aws_lb.mke_master.arn
-  port              = 6443
-  protocol          = "TCP"
-
-  default_action {
-    target_group_arn = aws_lb_target_group.mke_kube_api.arn
-    type             = "forward"
-  }
-}
-
-resource "aws_lb_target_group_attachment" "mke_kube_api" {
-  count            = var.master_count
-  target_group_arn = aws_lb_target_group.mke_kube_api.arn
-  target_id        = aws_instance.mke_master[count.index].id
-  port             = 6443
-}
-
-
-data "aws_route53_zone" "selected" {
-  name         = "cluster.avinashdesireddy.com."
-}
-
-resource "aws_route53_record" "www" {
-  zone_id = data.aws_route53_zone.selected.zone_id
-  name    = "${var.cluster_name}-mke.${data.aws_route53_zone.selected.name}"
-  type    = "A"
-
-  alias {
-    name                   = aws_lb.mke_master.dns_name
-    zone_id                = aws_lb.mke_master.zone_id
-    evaluate_target_health = true
-  }
-}
+#   alias {
+#     name                   = aws_lb.mke_master.dns_name
+#     zone_id                = aws_lb.mke_master.zone_id
+#     evaluate_target_health = true
+#   }
+# }
