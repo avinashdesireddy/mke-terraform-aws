@@ -1,0 +1,50 @@
+apiVersion: launchpad.mirantis.com/mke/v1.3
+kind: mke+msr
+spec:
+  hosts:
+  - role: manager
+    ssh:
+      address: 52.53.246.56
+      keyPath: ./ssh_keys/avi.pem
+      user: ec2-user
+  - role: msr
+    ssh:
+      address: 13.57.191.170
+      keyPath: ./ssh_keys/avi.pem
+      user: ec2-user
+  - role: worker
+    ssh:
+      address: 52.53.188.110
+      keyPath: ./ssh_keys/avi.pem
+      user: ec2-user
+  - role: worker
+    ssh:
+      address: 54.183.93.159
+      keyPath: ./ssh_keys/avi.pem
+      user: ec2-user
+      
+  mke:
+    version: "3.4.0"
+    adminPassword: Mkeadmin!
+    adminUsername: admin
+    caCertPath: /Users/avinashdesireddy/go/src/github.com/avinashdesireddy/projects/letsencrypt/config/archive/cluster.avinashdesireddy.com/fullchain1.pem
+    certPath: /Users/avinashdesireddy/go/src/github.com/avinashdesireddy/projects/letsencrypt/config/archive/cluster.avinashdesireddy.com/cert1.pem
+    keyPath: /Users/avinashdesireddy/go/src/github.com/avinashdesireddy/projects/letsencrypt/config/archive/cluster.avinashdesireddy.com/privkey1.pem
+    installFlags:
+    - --default-node-orchestrator=kubernetes
+    - --san=avi-master-lb-c0c1b80e2e988f08.elb.us-west-1.amazonaws.com
+    - --san=avi-mke.cluster.avinashdesireddy.com
+    - --controller-port=444
+#    swarmInstallFlags:      
+    configFile: ./mke-config.toml
+    licenseFilePath: /Users/avinashdesireddy/secrets/docker_subscription.lic
+  msr:
+    version: "2.9.0"
+    installFlags: 
+    - --ucp-insecure-tls
+    - --dtr-external-url https://avi-msr.cluster.avinashdesireddy.com
+    - --ucp-url https://avi-mke.cluster.avinashdesireddy.com
+#    caCertPath: ./ca.pem
+#    certPath: ./cert.pem
+#    keyPath: ./cert.key
+
