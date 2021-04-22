@@ -3,7 +3,7 @@ output "security_group_id" {
 }
 
 output "image_id" {
-  value = data.aws_ami.ubuntu.id
+  value = data.aws_ami.rhel.id
 }
 
 output "windows_2019_image_id" {
@@ -21,8 +21,4 @@ output "az_count" {
 
 output "kube_cluster_tag" {
   value = "kubernetes.io/cluster/${var.cluster_name}"
-}
-
-output "instance_profile_name" {
-  value = aws_iam_instance_profile.profile.name
 }

@@ -19,12 +19,12 @@ resource "aws_key_pair" "key" {
   public_key = tls_private_key.ssh_key.public_key_openssh
 }
 
-data "aws_ami" "ubuntu" {
+data "aws_ami" "rhel" {
   most_recent = true
 
   filter {
     name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*"]
+    values = ["RHEL-7.7_HVM-20190923-x86_64-0-Hourly2-GP2"]
   }
 
   filter {
@@ -32,7 +32,7 @@ data "aws_ami" "ubuntu" {
     values = ["hvm"]
   }
 
-  owners = ["099720109477"] # Canonical
+  owners = ["309956199498"] # Canonical
 }
 
 data "aws_ami" "windows_2019" {
@@ -78,67 +78,3 @@ resource "aws_security_group" "common" {
   }
 }
 
-resource "aws_iam_role" "role" {
-  name = "${var.cluster_name}_host"
-
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "",
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "ec2.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-EOF
-}
-
-resource "aws_iam_instance_profile" "profile" {
-  name = "${var.cluster_name}_host"
-  role = aws_iam_role.role.name
-}
-
-resource "aws_iam_role_policy" "policy" {
-  name = "${var.cluster_name}_host"
-  role = aws_iam_role.role.id
-
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": ["ec2:*"],
-      "Resource": ["*"]
-    },
-    {
-      "Effect": "Allow",
-      "Action": ["elasticloadbalancing:*"],
-      "Resource": ["*"]
-    },
-    {
-      "Effect": "Allow",
-      "Action": ["ecr:*"],
-      "Resource": ["*"]
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-          "autoscaling:DescribeLaunchConfigurations",
-          "autoscaling:DescribeAutoScalingGroups",
-          "autoscaling:DescribeAutoScalingInstances",
-          "autoscaling:DescribeTags",
-          "autoscaling:SetDesiredCapacity",
-          "autoscaling:TerminateInstanceInAutoScalingGroup"
-      ],
-      "Resource": "*"
-    }
-  ]
-}
-EOF
-}

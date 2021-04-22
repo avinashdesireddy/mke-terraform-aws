@@ -29,7 +29,6 @@ locals {
   subnet_count = "${length(var.subnet_ids)}"
 }
 
-
 resource "aws_instance" "mke_master" {
   count = var.master_count
 
@@ -40,7 +39,6 @@ resource "aws_instance" "mke_master" {
   )
 
   instance_type          = var.master_type
-  iam_instance_profile   = var.instance_profile_name
   ami                    = var.image_id
   key_name               = var.ssh_key
   vpc_security_group_ids = [var.security_group_id, aws_security_group.master.id]
@@ -124,4 +122,21 @@ resource "aws_lb_target_group_attachment" "mke_kube_api" {
   target_group_arn = aws_lb_target_group.mke_kube_api.arn
   target_id        = aws_instance.mke_master[count.index].id
   port             = 6443
+}
+
+
+data "aws_route53_zone" "selected" {
+  name         = "cluster.avinashdesireddy.com."
+}
+
+resource "aws_route53_record" "www" {
+  zone_id = data.aws_route53_zone.selected.zone_id
+  name    = "${var.cluster_name}-mke.${data.aws_route53_zone.selected.name}"
+  type    = "A"
+
+  alias {
+    name                   = aws_lb.mke_master.dns_name
+    zone_id                = aws_lb.mke_master.zone_id
+    evaluate_target_health = true
+  }
 }

@@ -2,8 +2,6 @@ variable "cluster_name" {}
 
 variable "vpc_id" {}
 
-variable "instance_profile_name" {}
-
 variable "security_group_id" {}
 
 variable "subnet_ids" {

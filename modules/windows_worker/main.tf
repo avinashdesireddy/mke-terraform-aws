@@ -9,6 +9,12 @@ resource "aws_security_group" "worker" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  ingress {
+    from_port   = 3389
+    to_port     = 3389
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
 
 locals {
@@ -25,7 +31,6 @@ resource "aws_instance" "mke_worker" {
   )
 
   instance_type          = var.worker_type
-  iam_instance_profile   = var.instance_profile_name
   ami                    = var.image_id
   vpc_security_group_ids = [var.security_group_id, aws_security_group.worker.id]
   subnet_id              = var.subnet_ids[count.index % local.subnet_count]
@@ -80,6 +85,14 @@ Write-Output "Restarting WinRM Service..."
 Stop-Service WinRM
 Set-Service WinRM -StartupType "Automatic"
 Start-Service WinRM
+
+Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0
+Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
+
+Start-Service sshd
+Set-Service -Name sshd -StartupType 'Automatic'
+Get-NetFirewallRule -Name *ssh*
+New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
 </powershell>
 EOF
 

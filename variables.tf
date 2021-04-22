@@ -1,5 +1,5 @@
 variable "cluster_name" {
-  default = "avinash"
+  default = "mke"
 }
 
 variable "aws_region" {
@@ -11,16 +11,20 @@ variable "vpc_cidr" {
 }
 
 variable "admin_password" {
-  default = "Mkeadmin!"
+  default = ""
 }
 
 
 variable "master_count" {
-  default = 3
+  default = 1
+}
+
+variable "msr_replica_count" {
+  default = 1
 }
 
 variable "worker_count" {
-  default = 3
+  default = 1
 }
 
 variable "windows_worker_count" {
@@ -28,14 +32,14 @@ variable "windows_worker_count" {
 }
 
 variable "master_type" {
-  default = "m5.large"
+  default = "t3.xlarge"
 }
 
 variable "worker_type" {
   default = "m5.large"
 }
 
-variable "master_volume_size" {
+variable "instance_volume_size" {
   default = 100
 }
 
@@ -44,5 +48,5 @@ variable "worker_volume_size" {
 }
 
 variable "windows_administrator_password" {
-  default = "Mkeadmin!"
+  default = ""
 }

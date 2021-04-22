@@ -19,7 +19,6 @@ resource "aws_instance" "mke_worker" {
   )
 
   instance_type          = var.worker_type
-  iam_instance_profile   = var.instance_profile_name
   ami                    = var.image_id
   key_name               = var.ssh_key
   vpc_security_group_ids = [var.security_group_id, aws_security_group.worker.id]
