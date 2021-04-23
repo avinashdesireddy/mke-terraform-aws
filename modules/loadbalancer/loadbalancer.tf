@@ -32,8 +32,17 @@ resource "aws_lb_listener" "listener" {
   }
 }
 
+data "template_file" "target_group_arns" {
+  count = length(var.ports) * length(var.instances)
+
+  template = "$${target_group_arn}"
+  vars = {
+    target_group_arn = element(aws_lb_target_group.targets.*.arn, floor(count.index / length(var.instances)))
+  }
+}
+
 resource "aws_lb_target_group_attachment" "target_group_attachment" {
-  count            = length(var.instances)
-  target_id        = var.instances[count.index]
-  target_group_arn = element(aws_lb_target_group.targets.*.arn, count.index)
+  count            = length(var.ports) * length(var.instances)
+  target_group_arn = element(data.template_file.target_group_arns.*.rendered, count.index)
+  target_id        = element(var.instances, count.index)
 }
