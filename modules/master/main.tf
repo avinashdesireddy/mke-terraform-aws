@@ -58,6 +58,10 @@ HOSTNAME=$(curl http://169.254.169.254/latest/meta-data/hostname)
 echo $HOSTNAME > /etc/hostname
 sed -i "s|\(127\.0\..\.. *\)localhost|\1$HOSTNAME|" /etc/hosts
 hostname $HOSTNAME
+sed -i s/SELINUX=enforcing/SELINUX=disabled/g /etc/selinux/config
+setenforce 0
+curl https://get.mirantis.com/ | DOCKER_URL="https://repos.mirantis.com" bash
+systemctl enable docker && systemctl start docker
 EOF
 
   lifecycle {

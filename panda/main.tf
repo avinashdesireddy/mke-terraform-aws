@@ -40,8 +40,8 @@ module "mke_lb" {
 
 module "mke_dns" {
   source = "../modules/route_53"
-  dns_name = "mke"
-  loadbalancer          = module.mke_lb.loadbalancer
+  dns_name = "panda-mke"
+  loadbalancer  = module.mke_lb.loadbalancer
 }
 
 /* MSR Replica Instances */
@@ -68,7 +68,7 @@ module "msr_lb" {
 
 module "msr_dns" {
   source = "../modules/route_53"
-  dns_name = "msr"
+  dns_name = "panda-msr"
   loadbalancer          = module.msr_lb.loadbalancer
 }
 
@@ -80,98 +80,41 @@ module "workers" {
   subnet_ids            = module.vpc.public_subnet_ids
   security_group_id     = module.common.security_group_id
   image_id              = module.common.image_id
-  //image_id              = "ami-09d9c5cdcfb8fc655"
   kube_cluster_tag      = module.common.kube_cluster_tag
   ssh_key               = var.cluster_name
   worker_type           = var.worker_type
 }
 
-module "windows_workers" {
-  source                         = "../modules/windows_worker"
-  worker_count                   = var.windows_worker_count
-  vpc_id                         = module.vpc.id
-  cluster_name                   = var.cluster_name
-  subnet_ids                     = module.vpc.public_subnet_ids
-  security_group_id              = module.common.security_group_id
-  image_id                       = "ami-05a67f224fcf5c170"
-  //image_id                       = module.common.windows_2019_image_id
-  kube_cluster_tag               = module.common.kube_cluster_tag
-  worker_type                    = var.worker_type
-  windows_administrator_password = var.windows_administrator_password
-}
-
-/*
 locals {
   managers = [
     for host in module.masters.machines : {
-      role             = host.tags["Role"]
-      ssh = {
-        address = host.public_ip
-        user    = "ec2-user"
-        keyPath = "./ssh_keys/${var.cluster_name}.pem"
-      }
+      address = host.public_ip
+      name = host.tags.Name
     }
   ]
   replicas = [
     for host in module.msr.machines : {
-      role             = host.tags["Role"]
-      ssh = {
-        address = host.public_ip
-        user    = "ec2-user"
-        keyPath = "./ssh_keys/${var.cluster_name}.pem"
-      }
+      address = host.public_ip
+      name = host.tags.Name
     }
   ]
 
   workers = [
     for host in module.workers.machines : {
-      role             = host.tags["Role"]      
-      ssh = {
-        address = host.public_ip
-        user    = "ec2-user"
-        keyPath = "./ssh_keys/${var.cluster_name}.pem"
-      }
+      address = host.public_ip
+      name = host.tags.Name
     }
   ]
-  windows_workers = [
-    for host in module.windows_workers.machines : {
-      role             = host.tags["Role"]
-      winRM = {
-        address = host.public_ip
-        user     = "Administrator"
-        password = var.windows_administrator_password
-        useHTTPS = true
-        insecure = true
-      }
-    }
-  ]
-  launchpad_tmpl = {
-    apiVersion = "launchpad.mirantis.com/mke/v1.1"
-    kind       = "mke"
-    spec = {
-      mke = {
-        adminUsername = "admin"
-        adminPassword = var.admin_password
-        installFlags : [
-          "--default-node-orchestrator=kubernetes",
-          "--san=${module.masters.lb_dns_name}",
-        ]
-      }
-      hosts = concat(local.managers, local.replicas, local.workers, local.windows_workers)
-    }
+
+  hosts_tmpl = {
+    hosts = concat(local.managers, local.replicas, local.workers)
   }
 }
 
 output "mke_cluster" {
-  value = yamlencode(local.launchpad_tmpl)
+  value = <<EOT
+%{ for host in local.hosts_tmpl.hosts ~}
+${host.address} ${host.name}
+%{ endfor ~}
+EOT
 }
-*/
-/*resource "local_file" "AnsibleInventory" {
- content = templatefile("inventory.tmpl",
-  {
-    names = aws_instance.mke_master.*.public_ip
-  }
- )
- filename = "inventory"
-}
-*/
