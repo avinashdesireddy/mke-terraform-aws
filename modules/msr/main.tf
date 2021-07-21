@@ -32,10 +32,10 @@ locals {
 resource "aws_instance" "msr_replica" {
   count = var.msr_replica_count
 
-  tags = map(
-    "Name", "${var.cluster_name}-msr-${count.index + 1}",
-    "Role", "msr"
-  )
+  tags = {
+    "Name" = "${var.cluster_name}-msr-${count.index + 1}",
+    "Role" = "msr"
+  }
 
   instance_type          = var.master_type
   ami                    = var.image_id
