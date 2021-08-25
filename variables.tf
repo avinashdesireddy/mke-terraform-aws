@@ -1,5 +1,4 @@
 variable "cluster_name" {
-  default = "mke"
 }
 
 variable "aws_region" {
@@ -11,16 +10,14 @@ variable "vpc_cidr" {
 }
 
 variable "admin_password" {
-  default = ""
 }
-
 
 variable "master_count" {
   default = 1
 }
 
 variable "msr_replica_count" {
-  default = 1
+  default = 0
 }
 
 variable "worker_count" {
@@ -36,7 +33,7 @@ variable "master_type" {
 }
 
 variable "worker_type" {
-  default = "m5.large"
+  default = "t3.xlarge"
 }
 
 variable "instance_volume_size" {
@@ -44,9 +41,28 @@ variable "instance_volume_size" {
 }
 
 variable "worker_volume_size" {
-  default = 100
+  default = 200
 }
 
 variable "windows_administrator_password" {
+}
+
+variable "mke_ports" {
+  default = ["443/tcp:443/tcp", "6443/tcp:6443/tcp"]
+}
+
+variable "msr_ports" {
+  default = ["443/tcp:443/tcp"]
+}
+
+variable "mke_version" {
+  default = "latest"
+}
+
+variable "master_image_id" {
+  default = ""
+}
+
+variable "worker_image_id" {
   default = ""
 }

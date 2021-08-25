@@ -8,8 +8,24 @@ This directory provides an example flow for using Mirantis Launchpad with Terraf
 * Terraform [installed](https://learn.hashicorp.com/terraform/getting-started/install)
 
 ## Steps
+1. Create/Use terraform workspace
+   ```
+   terraform workspace list
+   ```
+2. Export AWS credentials
+3. Create terraform.tfvars file with needed details. You can use the provided terraform.tfvars.example as a baseline.
+4. Run terraform 
+   ```
+   terraform init
+   terraform apply -var-file="terraform.tfvars"
+   ```
 
-1. Create terraform.tfvars file with needed details. You can use the provided terraform.tfvars.example as a baseline.
-2. `terraform init`
-3. `terraform apply`
-4. `terraform output mke_cluster | launchpad apply --config -`
+5. Create a launchpad file from terraform output
+   ```
+   terraform output mke_cluster > launchpad.yaml
+   ```
+
+6. Create a cluster using launchpad config
+   ```
+   launchpad apply -c launchpad.yaml
+   ```
