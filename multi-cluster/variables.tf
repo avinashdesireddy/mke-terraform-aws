@@ -73,3 +73,15 @@ variable "master_image_id" {
 variable "worker_image_id" {
   default = ""
 }
+
+variable "caCertPath" {
+}
+
+variable "certPath" {
+}
+
+variable "keyPath" {
+}
+
+variable "licenseFilePath" {
+}

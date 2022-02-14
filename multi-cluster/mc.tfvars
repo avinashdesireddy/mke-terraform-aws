@@ -13,3 +13,9 @@ windows_worker_count = 0
 mke_version = "3.5.1"
 instance_volume_size = 200
 worker_volume_size = 200
+
+## MKE Vars
+caCertPath = "/Users/avinashdesireddy/workspace/letsencrypt/config/live/cluster.avinashdesireddy.com/fullchain.pem"
+certPath = "/Users/avinashdesireddy/workspace/letsencrypt/config/live/cluster.avinashdesireddy.com/cert.pem"
+keyPath = "/Users/avinashdesireddy/workspace/letsencrypt/config/live/cluster.avinashdesireddy.com/privkey.pem"
+licenseFilePath = "/Users/avinashdesireddy/workspace/secrets/mke_subscription.lic"
