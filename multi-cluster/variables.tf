@@ -1,5 +1,12 @@
 variable "cluster_name" {
 }
+
+variable "cluster1" {  
+}
+
+variable "cluster2" {  
+}
+
 variable "aws_region" {
   default = "us-west-1"
 }
@@ -44,6 +51,7 @@ variable "worker_volume_size" {
 }
 
 variable "windows_administrator_password" {
+  default = "Password1"
 }
 
 variable "mke_ports" {

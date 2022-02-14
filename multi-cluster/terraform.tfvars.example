@@ -1,10 +1,12 @@
-cluster_name = "c1"
+cluster_name = "mc"
+cluster1 = "mc1"
+cluster2 = "mc2"
 admin_password = ""
-master_type = "m4.2xlarge"
+master_type = "m5.2xlarge"
 master_count = 1
 master_image_id = "ami-004556491237681fa"
 msr_replica_count = 0
-worker_type = "m5.12xlarge"
+worker_type = "m5.2xlarge"
 worker_count = 2
 worker_image_id = "ami-004556491237681fa"
 windows_worker_count = 0
