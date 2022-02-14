@@ -140,10 +140,10 @@ locals {
         version    = "${var.mke_version}"
         adminUsername = "admin"
         adminPassword = var.admin_password
-        caCertPath = "/Users/avinashdesireddy/go/src/github.com/avinashdesireddy/projects/letsencrypt/config/live/cluster.avinashdesireddy.com/fullchain.pem"
-        certPath = "/Users/avinashdesireddy/go/src/github.com/avinashdesireddy/projects/letsencrypt/config/live/cluster.avinashdesireddy.com/cert.pem"
-        keyPath = "/Users/avinashdesireddy/go/src/github.com/avinashdesireddy/projects/letsencrypt/config/live/cluster.avinashdesireddy.com/privkey.pem"
-        licenseFilePath = "/Users/avinashdesireddy/secrets/docker_subscription.lic"
+        caCertPath = "/Users/avinashdesireddy/workspace/letsencrypt/config/live/cluster.avinashdesireddy.com-0002/fullchain.pem"
+        certPath = "/Users/avinashdesireddy/workspace/letsencrypt/config/live/cluster.avinashdesireddy.com-0002/cert.pem"
+        keyPath = "/Users/avinashdesireddy/workspace/letsencrypt/config/live/cluster.avinashdesireddy.com-0002/privkey.pem"
+        licenseFilePath = "/Users/avinashdesireddy/workspace/secrets/mke_subscription.lic"
         installFlags : [
           "--default-node-orchestrator=kubernetes",
           "--san=${var.cluster_name}-mke.cluster.avinashdesireddy.com",
