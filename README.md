@@ -22,7 +22,7 @@ This directory provides an example flow for using Mirantis Launchpad with Terraf
 
 5. Create a launchpad file from terraform output
    ```
-   terraform output mke_cluster > launchpad.yaml
+   terraform output -raw mke_cluster > launchpad.yaml
    ```
 
 6. Create a cluster using launchpad config
